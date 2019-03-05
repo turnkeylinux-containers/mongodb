@@ -1,0 +1,5 @@
+VOLUME /data/db
+USER ${APP_NAME}:${APP_NAME}
+
+EXPOSE 27017
+CMD ["mongod"]

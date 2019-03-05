@@ -1,0 +1,17 @@
+{
+    "meta": {
+        "name": "mongodb",
+        "version": "4.0.4",
+        "containers": [
+            {
+                "name": "mongodb",
+                "version": "4.0.4",
+                "ports": {
+                    "27017": "tcp"
+                },
+                "cpu": 256,
+                "ram": 512
+            }
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+#!/bin/bash
+set -exuo pipefail
+
+apt-get install dirmngr gnupg2 curl
+
+declare -r MAJOR_VERSION=$( echo "${PRODUCT_VERSION}" | cut -d'.' -f1-2 )
+declare -r URL="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${PRODUCT_VERSION}.tgz"
+declare -r PGPURL="https://www.mongodb.org/static/pgp/server-${MAJOR_VERSION}.asc"
+declare -r TARBALL="$(basename "${URL}")"
+
+curl -sL "${PGPURL}" | gpg --import
+
+curl --remote-name-all -sL "${URL}" "${URL}.sig"
+gpg --batch --verify "${TARBALL}.sig" "${TARBALL}"
+rm "${TARBALL}.sig"
+
+mkdir -p "${SRCDIR}/mongodb"
+tar -xzf "${TARBALL}" --strip-components=1 -C "${SRCDIR}/mongodb"
+rm "${TARBALL}"
+
+cp "${SRCDIR}"/mongodb/bin/* /usr/local/bin/
+rm -rf "${SRCDIR}/mongodb"
+
+for dir in /{var/{lib/mongodb,log/mongodb},run/mongodb} /data/db; do
+    mkdir -p "${dir}"
+    chmod o-rwx "${dir}"
+    chown -R mongodb:mongodb "${dir}"
+done
+
+ln -s /dev/null /home/mongodb/.dbshell
+apt-get purge dirmngr gnupg2 curl
