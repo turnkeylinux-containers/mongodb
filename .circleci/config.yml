@@ -12,6 +12,7 @@ jobs:
       - run:
           name: Setup Environment
           command: |
+            jq -r '.meta.build_args | to_entries | .[] | if (.key | startswith("PRODUCT_")) then "export \(.key)=\"\(.value)\"" else empty end' manifest.json >> $BASH_ENV
             jq -r '"export BUILD_ARGS='\''" + (.meta | .build_args? | .? | to_entries | [ .[] | ("--build-arg=" + .key + "=" + .value) ] | join(" ")) + "'\''"' manifest.json >> $BASH_ENV
       - run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASS
@@ -24,5 +25,5 @@ jobs:
           mkdir -p build/overlay/usr/local/sbin
           docker cp keyhole:/go/src/keyhole/keyhole ./build/overlay/usr/local/sbin/keyhole
           cat /usr/share/tklc/skel/Dockerfile.head Dockerfile.tail > ./build/Dockerfile
-          docker build -t qrntz/nginx:test $BUILD_ARGS build
-          docker push qrntz/$PRODUCT_NAME:test
+          docker build -t qrntz/$PRODUCT_NAME:$PRODUCT_VERSION $BUILD_ARGS build
+          docker push qrntz/$PRODUCT_NAME:$PRODUCT_VERSION
