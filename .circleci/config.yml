@@ -14,7 +14,7 @@ jobs:
           command: |
             jq -r '"export PRODUCT_NAME=" + .meta.name' manifest.json >> $BASH_ENV
             jq -r '"export PRODUCT_VERSION=" + .meta.version' manifest.json >> $BASH_ENV
-            jq -r '.build | to_entries | .[] | ("--build-arg=" + .key + "=" + .value)' manifest.json | tr '\n' ' ' | sed "s/^/export BUILD_ARGS='/; s/ $/'/" >> $BASH_ENV
+            jq -r '.? | .build | to_entries | .[] | ("--build-arg=" + .key + "=" + .value)' manifest.json | tr '\n' ' ' | sed "s/^/export BUILD_ARGS='/; s/ $/'/" >> $BASH_ENV
       - run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker pull qrntz/keyhole-builder:master
