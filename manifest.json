@@ -1,7 +1,10 @@
 {
     "meta": {
-        "name": "mongodb",
-        "version": "4.0.4",
+        "build_args": {
+            "PRODUCT_NAME": "mongodb",
+            "PRODUCT_VERSION": "4.0.4",
+            "BASE_IMAGE": "qrntz/nginx:test"
+        },
         "containers": [
             {
                 "name": "mongodb",

@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Setup Environment
           command: |
-            jq -r '"export BUILD_ARGS='\''" + (.meta | [ { key: "PRODUCT_NAME", value: .name }, { key: "PRODUCT_VERSION", value: .version }, (.build_args? | .? | to_entries) ] | flatten | [ .[] | ("--build-arg=" + .key + "=" + .value) ] | join(" ")) + "'\''"' manifest.json >> $BASH_ENV
+            jq -r '"export BUILD_ARGS='\''" + (.meta | .build_args? | .? | to_entries | [ .[] | ("--build-arg=" + .key + "=" + .value) ] | join(" ")) + "'\''"' manifest.json >> $BASH_ENV
       - run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker pull qrntz/keyhole-builder:master
@@ -25,4 +25,4 @@ jobs:
           docker cp keyhole:/go/src/keyhole/keyhole ./build/overlay/usr/local/sbin/keyhole
           cat /usr/share/tklc/skel/Dockerfile.head Dockerfile.tail > ./build/Dockerfile
           docker build -t qrntz/nginx:test $BUILD_ARGS build
-          docker push qrntz/nginx:test
+          docker push qrntz/$PRODUCT_NAME:test
