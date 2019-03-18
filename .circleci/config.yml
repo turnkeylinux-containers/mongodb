@@ -19,7 +19,8 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker pull qrntz/keyhole-builder:master
           mkdir -p build
-          cp -r overlay build/overlay
+          if [[ -d overlay ]]; then cp -r overlay build/overlay; else mkdir -p build/overlay; fi
+          mkdir -p build/overlay/usr/share/tklc/conf
           cp /usr/share/tklc/conf/* build/overlay/usr/share/tklc/conf/
           tar czf - . | docker run --name keyhole -i qrntz/keyhole-builder:master
           mkdir -p build/overlay/usr/local/sbin
