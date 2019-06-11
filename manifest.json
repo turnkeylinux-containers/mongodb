@@ -2,12 +2,12 @@
     "meta": {
         "build_args": {
             "PRODUCT_NAME": "mongodb",
-            "PRODUCT_VERSION": "4.0.4"
+            "PRODUCT_VERSION": "4.0.10"
         },
         "containers": [
             {
                 "name": "mongodb",
-                "version": "4.0.4",
+                "version": "4.0.10",
                 "ports": {
                     "27017": "tcp"
                 },
